@@ -65,7 +65,11 @@
                 <p matLine>{{leader.description}} </p>
             </mat-list-item>
         </mat-list>
-
     </div>
   </div>
+
+  <div *ngIf="errMsg">
+    {{errMsg}}
+  </div>
+  
 </div>

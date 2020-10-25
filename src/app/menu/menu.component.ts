@@ -11,6 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 export class MenuComponent implements OnInit {
 
   dishes: Dish[];
+  errMsg: string;
   // selectedDish:Dish;
 
   constructor(
@@ -21,7 +22,8 @@ export class MenuComponent implements OnInit {
 
   ngOnInit(): void {
     this.dishService.getDishes()
-     .subscribe((dishes) => this.dishes =dishes);
+    .subscribe((dishes) => this.dishes =dishes,
+     errmsg=>this.errMsg=errmsg);
     
   } 
 

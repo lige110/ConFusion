@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { Dish } from '../shared/dish'
 // import { DISHES} from '../shared/dishes'
 import { Observable, of } from 'rxjs'
-import { delay, filter} from 'rxjs/operators';
+import { catchError, delay, filter} from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { baseURL } from '../shared/baseurl';
 import { map } from 'rxjs/operators'
+import { ProcessHttpMsgService } from './process-http-msg.service';
 
  
 @Injectable({
@@ -15,6 +16,7 @@ export class DishService {
 
   constructor(
     private http: HttpClient,
+    private processHTTPMsgService:ProcessHttpMsgService,
   ) { }
 
 
@@ -24,33 +26,31 @@ export class DishService {
     
     // return of(DISHES).pipe(delay(2000));
 
-    return this.http.get<Dish[]>(baseURL + 'dishes');
+    return this.http.get<Dish[]>(baseURL + 'dishes')
+    .pipe(catchError(this.processHTTPMsgService.handleError));
 
   }
 
   getDish(id: string) : Observable<Dish>{
     // return of(DISHES.filter((dish) => (dish.id === id))[0]).pipe(delay(2000));
-    return  this.http.get<Dish>(baseURL + 'dishes/' + id);
+    return  this.http.get<Dish>(baseURL + 'dishes/' + id)
+    .pipe(catchError(this.processHTTPMsgService.handleError));
 
   }
 
-  // getDish(id: string) : Dish{
-  //   DISHES.forEach(element => {
-      
-  //   });
-
-  // }
 
 
   getFeaturedDish(): Observable<Dish> {
     // return of(DISHES.filter((dish) => dish.featured)[0]).pipe(delay(2000));
     return this.http.get<Dish>(baseURL + 'dishes?featured=true')
-      .pipe(map(dishes => dishes[0]));
+      .pipe(map(dishes => dishes[0]))
+      .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 
   getDishIds(): Observable<string[] | any>{
     // return of(DISHES.map(dish => dish.id))
-    return this.http.get<Dish[]>(baseURL + 'dishes')
-      .pipe(map(dishes =>dishes.map(dish =>dish.id)));
+    return this.getDishes()
+      .pipe(map(dishes =>dishes.map(dish =>dish.id)))
+      .pipe(catchError(error=>error));
   }
 }

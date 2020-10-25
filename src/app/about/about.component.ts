@@ -10,6 +10,7 @@ import { Leader } from '../shared/leader';
 export class AboutComponent implements OnInit {
 
   leaders: Leader[];
+  errMsg: string;
 
   constructor(
     private leaderService:LeaderService,
@@ -17,7 +18,10 @@ export class AboutComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    this.leaderService.getLeaders().subscribe((leaders)=>  this.leaders =leaders);
+    this.leaderService.getLeaders()
+    .subscribe(
+      (leaders)=>  this.leaders =leaders,
+      errmsg=>this.errMsg = errmsg);
   }
 
 }

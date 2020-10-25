@@ -18,6 +18,7 @@ dish:Dish;
 dishIds: string[];
 prev:string;
 next:string;
+errmsg: string;
 
   constructor(
     private dishService: DishService,
@@ -31,7 +32,9 @@ next:string;
       console.log(`Current item is ${params.get("id")}`);
     });
     this.dishService.getDishIds()
-    .subscribe((dishIds) => this.dishIds = dishIds);
+    .subscribe(
+      (dishIds) => this.dishIds = dishIds,
+      errmsg=>this.errmsg=errmsg);
 
     this.route.params.pipe(switchMap((params:Params)=>this.dishService.getDish(params['id'])))
     .subscribe((DISH)=>{this.dish = DISH; console.log(DISH.id,"???"); this.setPrevNext(DISH.id);})
