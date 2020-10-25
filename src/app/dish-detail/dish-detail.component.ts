@@ -15,10 +15,12 @@ import { switchMap } from 'rxjs/operators';
 export class DishDetailComponent implements OnInit {
 
 dish:Dish;
+dishCopy:Dish;
 dishIds: string[];
 prev:string;
 next:string;
 errmsg: string;
+comment: Comment;
 
   constructor(
     private dishService: DishService,
@@ -28,16 +30,22 @@ errmsg: string;
     ) { }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params=>{
-      console.log(`Current item is ${params.get("id")}`);
-    });
-    this.dishService.getDishIds()
-    .subscribe(
-      (dishIds) => this.dishIds = dishIds,
-      errmsg=>this.errmsg=errmsg);
+    // this.route.paramMap.subscribe(params=>{
+    //   console.log(`Current item is ${params.get("id")}`);
+    // });
+    // this.dishService.getDishIds()
+    // .subscribe(
+    //   (dishIds) => this.dishIds = dishIds,
+    //   errmsg=>this.errmsg=errmsg);
 
-    this.route.params.pipe(switchMap((params:Params)=>this.dishService.getDish(params['id'])))
-    .subscribe((DISH)=>{this.dish = DISH; console.log(DISH.id,"???"); this.setPrevNext(DISH.id);})
+    this.route.params.pipe(
+      switchMap((params:Params)=>this.dishService.getDish(params['id'])))
+      .subscribe((DISH)=>{
+      this.dish = DISH;
+      this.dishCopy = DISH;
+      console.log(DISH.id,"???"); 
+      this.setPrevNext(DISH.id);},
+      errmsg=>this.errmsg=<any>errmsg);
   }
 
 
@@ -52,6 +60,11 @@ errmsg: string;
 
   goBack(): void{
     this.location.back();
+  }
+
+  onSubmit(){
+
+    // this.dishCopy.comments.push(this.comment);
   }
 
 }
